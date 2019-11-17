@@ -1,13 +1,13 @@
 package app
 
-import app.view.ProjectView
+import app.view.frame.All
 import com.thoughtworks.binding.dom
 import org.scalajs.dom.document
 
-object MainClass
+object MainApp
 {
     def main(args: Array[String]): Unit =
     {
-        dom.render(document.body,ProjectView.render)
+        dom.render(document.body,All.render)
     }
 }

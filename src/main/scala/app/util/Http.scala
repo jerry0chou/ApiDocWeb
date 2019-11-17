@@ -2,7 +2,7 @@ package app.util
 
 import org.scalajs.dom.ext.Ajax
 
-object http
+object Http
 {
     // data: case class convert to json string by implicit
     def post(url: String, data: String) =

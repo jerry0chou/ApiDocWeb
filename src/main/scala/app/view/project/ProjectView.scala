@@ -10,7 +10,7 @@ import upickle.default.read
 
 import scala.language.experimental.macros
 import scala.scalajs.concurrent.JSExecutionContext.Implicits.queue
-import scala.util.Success
+import scala.util.{Failure, Success}
 
 object ProjectView
 {
@@ -21,9 +21,9 @@ object ProjectView
 
     case class Human(name: String)
 
-    val editProject={
-        e:Event=>
-            Route.path.value="project_edit"
+    val editProject = {
+        e: Event =>
+            Route.path.value = "project_edit"
     }
 
     def mounted =
@@ -33,7 +33,8 @@ object ProjectView
             case Success(response) =>
                 val str = response.responseText
                 read[ProjectList](str).data.map(pro => projectList.value += Project(Var(pro.projId), Var(pro.projName), Var(pro.projDesc)))
-            //            case Failure(exception)=>
+            case Failure(exception) =>
+                Route.path.value="exception"
         }
     }
 

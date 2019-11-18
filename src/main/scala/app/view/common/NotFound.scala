@@ -1,4 +1,4 @@
-package app.view.frame
+package app.view.common
 
 import com.thoughtworks.binding.dom
 

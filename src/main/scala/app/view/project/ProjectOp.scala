@@ -1,6 +1,6 @@
 package app.view.project
 
-import app.util.Convertor.{AddOrUpdateMSg, Project}
+import app.util.Convertor.{ Message, Project}
 import app.util.Http
 import app.util.Store.currentProject
 import com.thoughtworks.binding.dom
@@ -8,6 +8,7 @@ import org.scalajs.dom.html.Input
 import org.scalajs.dom.raw.Event
 import app.view.frame.Route
 import com.thoughtworks.binding.Binding.Var
+
 import scala.scalajs.concurrent.JSExecutionContext.Implicits.queue
 import scala.util.{Failure, Success}
 import upickle.default.{read, write}
@@ -18,15 +19,15 @@ object ProjectOp
     val submitProject = {
         e: Event =>
             e.preventDefault()
-            if (currentProject.projName.value == "" || currentProject.projDesc.value == "") {
-                msg.value = "请将所有信息填写完毕"
+            if (currentProject.projName.value == "" ) {
+                msg.value = "please fill project name"
             }
             else {
                 val pStr = Project(currentProject.projId.value, currentProject.projName.value, currentProject.projDesc.value)
                 Http.post("/project/addOrEditProject", write(pStr)).andThen {
                     case Success(response) =>
                         val str = response.responseText
-                        msg.value = read[AddOrUpdateMSg](str).Msg
+                        msg.value = read[Message](str).Msg
                     case Failure(exception) =>
                         Route.path.value = "exception"
                 }

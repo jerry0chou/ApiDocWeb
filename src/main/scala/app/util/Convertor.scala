@@ -5,6 +5,13 @@ import upickle.default.{macroRW, ReadWriter => RW}
 object Convertor
 {
 
+    case class ID(id: Int)
+
+    object ID
+    {
+        implicit def rW: RW[ID] = macroRW
+    }
+
     case class Project(projId: Int, projName: String, projDesc: String)
 
     object Project
@@ -19,11 +26,11 @@ object Convertor
         implicit def rw: RW[ProjectList] = macroRW
     }
 
-    case class AddOrUpdateMSg(code: Int, data: String, Msg: String)
+    case class Message(code: Int, data: String, Msg: String)
 
-    object AddOrUpdateMSg
+    object Message
     {
-        implicit def rw: RW[AddOrUpdateMSg] = macroRW
+        implicit def rw: RW[Message] = macroRW
     }
 
 }

@@ -7,33 +7,48 @@ import app.view.frame.Route
 import com.thoughtworks.binding.Binding.{Var, Vars}
 import com.thoughtworks.binding.dom
 import org.scalajs.dom.raw.Event
-import upickle.default.read
+import upickle.default.{read, write}
 import scala.language.experimental.macros
 import scala.scalajs.concurrent.JSExecutionContext.Implicits.queue
 import scala.util.{Failure, Success}
+import app.util.Auto._
 
 object ProjectView
 {
     val projectList = Vars.empty[ProjectVar]
+
+    def deleteProject(id: Int) =
+    {
+        Http.post("/project/deleteProject", write[ID](ID(id))).andThen {
+            case Success(response) =>
+                val str = response.responseText
+                println(str)
+                println(read[Message](str).Msg)
+                mounted
+            case Failure(exception) =>
+                Route.path.value = "exception"
+        }
+    }
 
     def AddorEditProject(p: ProjectVar) =
     {
         if (p.projId.value != -1)
             Store.currentProject = ProjectVar(p.projId, p.projName, p.projDesc)
         else
-            Store.currentProject = ProjectVar(Var(-1), Var(""), Var(""))
+            Store.currentProject = ProjectVar(-1, "", "")
         Route.path.value = "project_op"
     }
 
     def mounted =
     {
-        projectList.value.clear()
-        Http.get("/project/getProjectList").andThen {
-            case Success(response) =>
-                val str = response.responseText
-                read[ProjectList](str).data.map(pro => projectList.value += ProjectVar(Var(pro.projId), Var(pro.projName), Var(pro.projDesc)))
-            case Failure(exception) =>
-                Route.path.value = "exception"
+        if (projectList.value.length == 0) {
+            Http.get("/project/getProjectList").andThen {
+                case Success(response) =>
+                    val str = response.responseText
+                    read[ProjectList](str).data.map(pro => projectList.value += ProjectVar(pro.projId, pro.projName, pro.projDesc))
+                case Failure(exception) =>
+                    Route.path.value = "exception"
+            }
         }
     }
 
@@ -60,12 +75,13 @@ object ProjectView
                             <div class="extra content">
                                 <button class="ui primary button">进入项目</button>
                                 <button class="ui  button" onclick={e: Event => AddorEditProject(p)}>修改项目</button>
+                                <button class="ui red button" onclick={e: Event => deleteProject(p.projId.value)}>删除项目</button>
                             </div>
                         </div>
                     </div>
                 }}<div class="five wide column">
                     <div class="ui card">
-                        <button class="green ui button" onclick={e: Event => AddorEditProject(ProjectVar(Var(-1),Var(""),Var("")))}>添加项目</button>
+                        <button class="green ui button" onclick={e: Event => AddorEditProject(ProjectVar(-1, "", ""))}>添加项目</button>
                     </div>
                 </div>
                 </div>

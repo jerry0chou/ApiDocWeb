@@ -8,10 +8,12 @@ import com.thoughtworks.binding.Binding.{Var, Vars}
 import com.thoughtworks.binding.dom
 import org.scalajs.dom.raw.Event
 import upickle.default.{read, write}
+
 import scala.language.experimental.macros
 import scala.scalajs.concurrent.JSExecutionContext.Implicits.queue
 import scala.util.{Failure, Success}
 import app.util.Auto._
+import app.view.common.CSS
 
 object ProjectView
 {
@@ -39,6 +41,11 @@ object ProjectView
         Route.path.value = "project_op"
     }
 
+    def openProject(p: ProjectVar)={
+        Store.currentProject=ProjectVar(p.projId, p.projName, p.projDesc)
+        Route.path.value ="module"
+    }
+
     def mounted =
     {
         if (projectList.value.length == 0) {
@@ -56,12 +63,13 @@ object ProjectView
     {
         mounted
         <div>
+            {CSS.css.bind}
             <div style="margin-top: 50px"></div>
             <div class="ui container">
-                <div class="ui grid">
+                <div class="ui grid ">
                     {for (p <- projectList) yield {
-                    <div class="five wide column">
-                        <div class="ui card">
+                    <div class="five wide column ">
+                        <div class="ui card shadow">
                             <div class="content">
                                 <div class="header">
                                     {p.projName.bind}
@@ -73,9 +81,9 @@ object ProjectView
                                 </h4>
                             </div>
                             <div class="extra content">
-                                <button class="ui primary button">进入项目</button>
-                                <button class="ui  button" onclick={e: Event => AddorEditProject(p)}>修改项目</button>
-                                <button class="ui red button" onclick={e: Event => deleteProject(p.projId.value)}>删除项目</button>
+                                <button class="ui circular primary eye icon small button" onclick={e:Event=>openProject(p)}><i class="eye icon"></i></button>
+                                <button class="ui circular olive edit  small button" onclick={e: Event => AddorEditProject(p)}><i class="edit  icon"></i></button>
+                                <button class="ui circular red trash icon small button" onclick={e: Event => deleteProject(p.projId.value)}><i class="trash icon"></i></button>
                             </div>
                         </div>
                     </div>

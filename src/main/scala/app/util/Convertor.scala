@@ -33,4 +33,10 @@ object Convertor
         implicit def rw: RW[Message] = macroRW
     }
 
+    case class SingleProject(code: Int, data: Project, Msg: String)
+
+    object SingleProject
+    {
+        implicit def rw: RW[SingleProject] = macroRW
+    }
 }

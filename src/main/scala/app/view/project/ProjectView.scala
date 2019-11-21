@@ -22,9 +22,9 @@ object ProjectView
         Http.post("/project/deleteProject", write[ID](ID(id))).andThen {
             case Success(response) =>
                 val str = response.responseText
-                println(str)
                 println(read[Message](str).Msg)
-                mounted
+                val index = projectList.value.map(_.projId.value).indexOf(id)
+                projectList.value.remove(index)
             case Failure(exception) =>
                 Route.path.value = "exception"
         }

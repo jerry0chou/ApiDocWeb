@@ -32,7 +32,7 @@ object ProjectView
         }
     }
 
-    def AddorEditProject(p: ProjectVar) =
+    def addorEditProject(p: ProjectVar) =
     {
         if (p.projId.value != -1)
             Store.currentProject = ProjectVar(p.projId, p.projName, p.projDesc)
@@ -82,14 +82,14 @@ object ProjectView
                             </div>
                             <div class="extra content">
                                 <button class="ui circular primary eye icon small button" onclick={e:Event=>openProject(p)}><i class="eye icon"></i></button>
-                                <button class="ui circular olive edit  small button" onclick={e: Event => AddorEditProject(p)}><i class="edit  icon"></i></button>
+                                <button class="ui circular primary edit  small button" onclick={e: Event => addorEditProject(p)}><i class="edit  icon"></i></button>
                                 <button class="ui circular red trash icon small button" onclick={e: Event => deleteProject(p.projId.value)}><i class="trash icon"></i></button>
                             </div>
                         </div>
                     </div>
                 }}<div class="five wide column">
                     <div class="ui card">
-                        <button class="green ui button" onclick={e: Event => AddorEditProject(ProjectVar(-1, "", ""))}>添加项目</button>
+                        <button class="primary ui button" onclick={e: Event => addorEditProject(ProjectVar(-1, "", ""))}>Add Project</button>
                     </div>
                 </div>
                 </div>

@@ -16,6 +16,7 @@ import upickle.default.{read, write}
 object ProjectOp
 {
     val msg = Var("")
+    val disable = Var(false)
     val submitProject = {
         e: Event =>
             e.preventDefault()
@@ -27,15 +28,17 @@ object ProjectOp
                 Http.post("/project/addOrEditProject", write(pStr)).andThen {
                     case Success(response) =>
                         val str = response.responseText
-                        val json=read[SingleProject](str)
+                        val json = read[SingleProject](str)
                         val project = json.data
-                        msg.value=json.Msg
-                        val projectVar=ProjectVar(project.projId, project.projName, project.projDesc)
-                        if (currentProject.projId.value == -1)
+                        msg.value = json.Msg
+                        val projectVar = ProjectVar(project.projId, project.projName, project.projDesc)
+                        if (currentProject.projId.value == -1) {
                             ProjectView.projectList.value += projectVar
+                            disable.value = true
+                        }
                         else {
                             val index = ProjectView.projectList.value.map(_.projId.value).indexOf(currentProject.projId.value)
-                            ProjectView.projectList.value(index)=projectVar
+                            ProjectView.projectList.value(index) = projectVar
                         }
                     case Failure(exception) =>
                         Route.path.value = "exception"
@@ -46,6 +49,7 @@ object ProjectOp
     @dom def render =
     {
         msg.value = ""
+        disable.value=false
         <div>
             <div class="ui grid">
                 <div class="four wide column"></div>
@@ -63,7 +67,7 @@ object ProjectOp
                             <label>Project Description</label>
                             <input type="text" name="project description" placeholder="Project Description" value={currentProject.projDesc.bind} oninput={e: Event => currentProject.projDesc.value = e.currentTarget.asInstanceOf[Input].value}/>
                         </div>
-                        <button class="ui blue button" onclick={submitProject}>Submit</button>
+                        <button class="ui blue button" style:display={if (disable.bind == false) "" else "none"} onclick={submitProject}>Submit</button>
                         <button class="ui green button" onclick={e: Event => e.preventDefault(); Route.path.value = "project"}>Back</button>
                     </form>
                 </div>

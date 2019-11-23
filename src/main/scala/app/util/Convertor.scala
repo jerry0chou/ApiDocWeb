@@ -39,4 +39,42 @@ object Convertor
     {
         implicit def rw: RW[SingleProject] = macroRW
     }
+
+    case class Module(modId: Int, projId: Int, modName: String, modDesc: String)
+
+    object Module
+    {
+        implicit def rw: RW[Module] = macroRW
+    }
+
+    case class SingleModule(code: Int, data: Module, Msg: String)
+
+    object SingleModule
+    {
+        implicit def rw: RW[SingleModule] = macroRW
+    }
+
+
+    //
+    case class SimpleApi(apiId: Int, apiName: String)
+
+    object SimpleApi
+    {
+        implicit def rw: RW[SimpleApi] = macroRW
+    }
+
+    case class ModApiList(modId: Int, modName: String, apiList: List[SimpleApi])
+
+    object ModApiList
+    {
+        implicit def rw: RW[ModApiList] = macroRW
+    }
+
+    case class ModApiResult(code: Int, data: List[ModApiList], Msg: String)
+
+    object ModApiResult
+    {
+        implicit def rw: RW[ModApiResult] = macroRW
+    }
+
 }
